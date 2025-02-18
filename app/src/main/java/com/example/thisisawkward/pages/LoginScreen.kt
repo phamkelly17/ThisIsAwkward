@@ -1,4 +1,4 @@
-package com.example.thisisawkward
+package com.example.thisisawkward.pages
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,20 +14,20 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
 @Composable
-fun SignUpScreen(navController: NavController) {
+fun LoginScreen(navController: NavController) {
     Column(
         Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "Sign Up Page"
+            text = "Login Page"
         )
         Spacer(Modifier.height(8.dp))
         Button(
             onClick = { navController.navigate("home") },
         ) {
-            Text("Go To Home Page")
+            Text(" Go To Home Page")
         }
     }
 }

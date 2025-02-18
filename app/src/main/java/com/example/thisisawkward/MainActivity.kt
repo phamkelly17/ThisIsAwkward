@@ -4,13 +4,15 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.thisisawkward.pages.CreateDateScreen
+import com.example.thisisawkward.pages.HomeScreen
+import com.example.thisisawkward.pages.LandingScreen
+import com.example.thisisawkward.pages.LoginScreen
+import com.example.thisisawkward.pages.MyProfileScreen
+import com.example.thisisawkward.pages.SignUpScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

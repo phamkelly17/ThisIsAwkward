@@ -1,4 +1,4 @@
-package com.example.thisisawkward
+package com.example.thisisawkward.pages
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,25 +14,25 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
 @Composable
-fun HomeScreen(navController: NavController) {
+fun LandingScreen(navController: NavController) {
     Column(
         Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "Home Page"
+            text = "Landing Page"
         )
         Spacer(Modifier.height(8.dp))
         Button(
-            onClick = { navController.navigate("createDate") },
+            onClick = { navController.navigate("login") },
         ) {
-            Text("Create Date")
+            Text("Login")
         }
         Button(
-            onClick = { navController.navigate("myProfile") },
+            onClick = { navController.navigate("signup") },
         ) {
-            Text("My Profile")
+            Text("Sign Up")
         }
     }
 }

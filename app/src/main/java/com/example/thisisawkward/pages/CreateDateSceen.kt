@@ -1,4 +1,4 @@
-package com.example.thisisawkward
+package com.example.thisisawkward.pages
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
