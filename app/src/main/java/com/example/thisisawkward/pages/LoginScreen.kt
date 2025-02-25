@@ -90,10 +90,7 @@ fun LoginScreen(navController: NavController) {
                     modifier = Modifier
                         .align(Alignment.End)
                         .padding(top = 5.dp)
-                        .clickable {
-                        // Handle click here
-                        navController.navigate("home")
-                    }
+                        .clickable { }
                 )
 
                 Button(
