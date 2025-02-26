@@ -16,6 +16,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.thisisawkward.R
+import com.example.thisisawkward.ui.theme.Maroon
 
 @Composable
 fun Header() {
@@ -32,7 +33,7 @@ fun Header() {
                 contentScale = ContentScale.Fit,
                 modifier = Modifier.size(35.dp)
             )
-            Text("Save the day. Crash the date.")
+            Text(text = "Save the day. Crash the date.", color = Maroon)
         }
     }
 }

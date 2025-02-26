@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import com.example.thisisawkward.R
 import com.example.thisisawkward.ui.theme.ButtonGreen
 import com.example.thisisawkward.ui.theme.ButtonRed
+import com.example.thisisawkward.ui.theme.Maroon
 
 @Composable
 fun Alert() {
@@ -61,16 +62,16 @@ fun Alert() {
             ){
                 Column (modifier = Modifier.padding(vertical = 5.dp)){
                     Row (modifier = Modifier.padding(horizontal = 10.dp)){
-                        Text("Name:", fontWeight = FontWeight.Bold)
-                        Text("Eloise Kurian", modifier = Modifier.padding(horizontal = 5.dp))
+                        Text("Name:", fontWeight = FontWeight.Bold, color = Maroon)
+                        Text("Eloise Kurian", modifier = Modifier.padding(horizontal = 5.dp), color = Maroon)
                     }
                     Row (modifier = Modifier.padding(horizontal = 10.dp)){
-                        Text("Location:", fontWeight = FontWeight.Bold)
-                        Text("Cafe Rouge", modifier = Modifier.padding(horizontal = 5.dp))
+                        Text("Location:", fontWeight = FontWeight.Bold, color = Maroon)
+                        Text("Cafe Rouge", modifier = Modifier.padding(horizontal = 5.dp), color = Maroon)
                     }
                     Row (modifier = Modifier.padding(horizontal = 10.dp)){
-                        Text("ETA:", fontWeight = FontWeight.Bold)
-                        Text("100m away, 2 min walk", modifier = Modifier.padding(horizontal = 5.dp))
+                        Text("ETA:", fontWeight = FontWeight.Bold, color = Maroon)
+                        Text("100m away, 2 min walk", modifier = Modifier.padding(horizontal = 5.dp), color = Maroon)
                     }
                 }
             }
@@ -89,12 +90,12 @@ fun Alert() {
                 ){
                     Column (modifier = Modifier.padding(vertical = 5.dp)){
                         Row (modifier = Modifier.padding(horizontal = 10.dp)){
-                            Text("Modus:", fontWeight = FontWeight.Bold)
-                            Text("Call me with a family emergency!", modifier = Modifier.padding(horizontal = 5.dp))
+                            Text("Modus:", fontWeight = FontWeight.Bold, color = Maroon)
+                            Text("Call me with a family emergency!", modifier = Modifier.padding(horizontal = 5.dp), color = Maroon)
                         }
                         Row (modifier = Modifier.padding(horizontal = 10.dp)){
-                            Text("Location:", fontWeight = FontWeight.Bold)
-                            Text("Cafe Rouge", modifier = Modifier.padding(horizontal = 5.dp))
+                            Text("Location:", fontWeight = FontWeight.Bold, color = Maroon)
+                            Text("Cafe Rouge", modifier = Modifier.padding(horizontal = 5.dp), color = Maroon)
                         }
                     }
                 }
@@ -109,7 +110,7 @@ fun Alert() {
                         .align(Alignment.End)
                         .padding(top = 5.dp)
                 ) {
-                    Text(if (requestAccepted.value) "Cancel Request" else "Accept Request")
+                    Text(text = if (requestAccepted.value) "Cancel Request" else "Accept Request", color = Maroon)
                 }
             }
         }
