@@ -1,5 +1,6 @@
 package com.example.thisisawkward.pages
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,6 +27,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -84,7 +86,7 @@ fun SignUpScreen(navController: NavController) {
             style = TextStyle(fontSize = 36.sp),
             color = Maroon,
             fontWeight = FontWeight.SemiBold,
-            modifier = Modifier.padding(bottom = 20.dp)
+            modifier = Modifier.padding(bottom = 10.dp)
         )
 
         Box(
@@ -169,6 +171,26 @@ fun SignUpScreen(navController: NavController) {
             Text(
                 text = "Sign up",
                 style = TextStyle(fontSize = 24.sp)
+            )
+        }
+
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text("Have an account? ", color = Color.White, fontSize = 20.sp)
+
+            Text(
+                text = "Log In",
+                color = Color.White,
+                fontWeight = FontWeight.Bold,
+                textDecoration = TextDecoration.Underline,
+                fontSize = 20.sp,
+                modifier = Modifier
+                    .clickable {
+                        navController.navigate("login")
+                    }
+                    .padding(vertical = 5.dp)
             )
         }
     }
