@@ -7,13 +7,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import com.example.thisisawkward.R
 
 @Composable
-fun Background() {
+fun Background(id: Int) {
     Box(modifier = Modifier.fillMaxSize()){
         Image(
-            painter = painterResource(id = R.drawable.background),
+            painter = painterResource(id = id),
             contentDescription = "Background",
             contentScale = ContentScale.FillBounds,
             modifier = Modifier.matchParentSize()

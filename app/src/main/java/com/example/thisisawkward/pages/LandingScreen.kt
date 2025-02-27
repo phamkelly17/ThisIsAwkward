@@ -23,12 +23,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.thisisawkward.R
-import com.example.thisisawkward.components.LandingBackground
+import com.example.thisisawkward.components.Background
 import com.example.thisisawkward.ui.theme.Maroon
 
 @Composable
 fun LandingScreen(navController: NavController) {
-    LandingBackground()
+    Background(id = R.drawable.landing_background)
     Column(
         modifier = Modifier
             .fillMaxSize()

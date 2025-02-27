@@ -27,7 +27,8 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.thisisawkward.components.LoginBackground
+import com.example.thisisawkward.R
+import com.example.thisisawkward.components.Background
 import com.example.thisisawkward.components.TextField
 import com.example.thisisawkward.ui.theme.Gray2
 import com.example.thisisawkward.ui.theme.Maroon
@@ -45,8 +46,7 @@ fun LoginScreen(navController: NavController) {
         passwordField.value = newValue
     }
 
-
-    LoginBackground()
+    Background(id = R.drawable.login_background)
     Column(
         modifier = Modifier
             .fillMaxSize()

@@ -9,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
+import com.example.thisisawkward.R
 import com.example.thisisawkward.components.Alert
 import com.example.thisisawkward.components.Background
 import com.example.thisisawkward.components.Footer
@@ -16,7 +17,7 @@ import com.example.thisisawkward.components.Header
 
 @Composable
 fun HomeScreen(navController: NavController) {
-    Background()
+    Background(id = R.drawable.background)
     Column(modifier = Modifier.fillMaxSize()){
         Header()
         LazyColumn(
