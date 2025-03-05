@@ -35,11 +35,12 @@ fun TextField(
     isPasswordField: Boolean = false,
     isNumberField: Boolean = false,
     numLines: Int = 1,
+    labelColor: Color = Color.White
     ) {
     Column (modifier = Modifier.padding(vertical = 4.dp)){
         Text(
             text = label,
-            color = Color.White,
+            color = labelColor,
             style = TextStyle(fontSize = 20.sp),
             modifier = Modifier.padding(horizontal = 15.dp, vertical = 4.dp)
         )
@@ -56,7 +57,7 @@ fun TextField(
             textStyle = TextStyle(color = TextFieldGray),
             modifier = Modifier
                 .fillMaxWidth()
-                .height((22 + (23 * numLines)).dp),
+                .height((25 + (20 * numLines)).dp),
             singleLine = (numLines == 1),
             keyboardOptions = if (isNumberField) KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number) else KeyboardOptions.Default,
 
@@ -69,12 +70,33 @@ fun TextField(
 @Composable
 fun PreviewTextField() {
     var text = rememberSaveable { mutableStateOf("") }
-    TextField(label = "label", fieldValue = text, onChange = {text.value = it})
+    TextField(
+        label = "label",
+        fieldValue = text,
+        onChange = { text.value = it }
+    )
+}
+
+@Preview
+@Composable
+fun PreviewTextFieldGrayLabel() {
+    var text = rememberSaveable { mutableStateOf("") }
+    TextField(
+        label = "label",
+        fieldValue = text,
+        onChange = { text.value = it },
+        labelColor = Color.DarkGray
+    )
 }
 
 @Preview
 @Composable
 fun PreviewMultilineTextField() {
     var text = rememberSaveable { mutableStateOf("") }
-    TextField(label = "label", fieldValue = text, onChange = {text.value = it}, numLines = 5)
+    TextField(
+        label = "label",
+        fieldValue = text,
+        onChange = { text.value = it },
+        numLines = 5
+    )
 }
