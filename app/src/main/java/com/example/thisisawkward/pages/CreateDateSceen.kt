@@ -29,23 +29,23 @@ import com.example.thisisawkward.components.Background
 import com.example.thisisawkward.components.Footer
 import com.example.thisisawkward.components.Header
 import com.example.thisisawkward.components.TextField
+import com.example.thisisawkward.components.UploadImageButton
 import com.example.thisisawkward.ui.theme.LightBlue
-import com.example.thisisawkward.ui.theme.Purple80
 
 @Preview
 @Composable
 fun PreviewCreateDateScreen() {
-    CreateDateScreen(navController = null)
+    CreateDateScreen(rememberNavController())
 }
 
 @Composable
-fun CreateDateScreen(navController: NavController?) {
+fun CreateDateScreen(navController: NavController) {
     Background(id = R.drawable.background)
     Column(modifier = Modifier.fillMaxSize()){
         Header()
         DateForm()
         Spacer(modifier = Modifier.weight(1f))
-        Footer(rememberNavController())
+        Footer(navController)
     }
 }
 
@@ -54,7 +54,7 @@ fun DateForm() {
     var time = rememberSaveable { mutableStateOf("") }
     var date = rememberSaveable { mutableStateOf("") }
     var location = rememberSaveable { mutableStateOf("") }
-    var modusOperandum = rememberSaveable { mutableStateOf("") }
+    var modusOperandi = rememberSaveable { mutableStateOf("") }
     var additionalDetails = rememberSaveable { mutableStateOf("") }
     var imageUri = rememberSaveable { mutableStateOf<String?>(null) }
 
@@ -83,9 +83,10 @@ fun DateForm() {
             TextField(labelColor = Color.DarkGray, label = "Time", fieldValue = time, onChange = { time.value = it })
             TextField(labelColor = Color.DarkGray, label = "Date", fieldValue = date, onChange = { date.value = it })
             TextField(labelColor = Color.DarkGray, label = "Location", fieldValue = location, onChange = { location.value = it })
-            TextField(labelColor = Color.DarkGray, label = "Preferred Modus Operandum", fieldValue = modusOperandum, onChange = { modusOperandum.value = it })
-            TextField(labelColor = Color.DarkGray, label = "Additional Details", fieldValue = additionalDetails, onChange = { additionalDetails.value = it }, numLines = 4)
+            TextField(labelColor = Color.DarkGray, label = "Preferred Modus Operandi", fieldValue = modusOperandi, onChange = { modusOperandi.value = it })
+            TextField(labelColor = Color.DarkGray, label = "Additional Details", fieldValue = additionalDetails, onChange = { additionalDetails.value = it }, numLines = 2)
 
+            UploadImageButton()
 
             Spacer(modifier = Modifier.height(12.dp))
 
