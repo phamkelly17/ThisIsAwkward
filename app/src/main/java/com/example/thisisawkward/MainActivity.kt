@@ -40,7 +40,7 @@ class MainActivity : ComponentActivity() {
                        HomeScreen(navController)
                    }
                    composable("createDate"){
-                       CreateDateScreen()
+                       CreateDateScreen(navController)
                    }
                    composable("myProfile"){
                        MyProfileScreen()
