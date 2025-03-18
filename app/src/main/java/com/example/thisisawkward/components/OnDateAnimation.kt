@@ -12,10 +12,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
+import android.graphics.Paint
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.draw.clip
+
 import com.example.thisisawkward.R
 import com.example.thisisawkward.ui.theme.*
 
@@ -65,49 +76,91 @@ fun OnDateAnimation() {
         Box(modifier = Modifier.size(300.dp)
             .rotate(rotationAngle1),
             contentAlignment = Alignment.Center) {
-            Canvas(
+            GlowCricle(
                 modifier = Modifier
-                    .size(260.dp)
-                    .offset(x= (-7).dp)
-            ) {
-                drawCircle(
-                    color = Purple40,
-                    style = Stroke(width = 3.dp.toPx())
-                )
-            }
+                    .offset(x= (-7).dp),
+                glowingColor = Purple40,
+                glowingRadius = 10.dp,
+                circleRadius = 128.dp
+            )
         }
 
         // Second animated ring
         Box(modifier = Modifier.size(300.dp)
             .rotate(-rotationAngle2),
             contentAlignment = Alignment.Center) {
-            Canvas(
+            GlowCricle(
                 modifier = Modifier
-                    .size(257.dp)
-                    .offset(x= (5).dp)
-            ) {
-                drawCircle(
-                    color = PurpleGrey40,
-                    style = Stroke(width = 3.dp.toPx())
-                )
-            }
+                    .offset(x= (8).dp),
+                glowingColor = PurpleGrey40,
+                glowingRadius = 10.dp,
+                circleRadius = 132.dp
+            )
         }
 
         // Third animated rind
         Box(modifier = Modifier.size(300.dp)
             .rotate(rotationAngle3),
             contentAlignment = Alignment.Center) {
-            Canvas(
+            GlowCricle(
                 modifier = Modifier
-                    .size(265.dp)
-                    .offset(y = (2).dp)
-            ) {
-                drawCircle(
-                    color = ButtonRed,
-                    style = Stroke(width = 3.dp.toPx())
-                )
-            }
+                    .offset(x= (-5).dp),
+                glowingColor = ButtonRed,
+                glowingRadius = 10.dp,
+                circleRadius = 130.dp
+            )
         }
 
+    }
+}
+
+
+
+@Composable
+fun GlowCricle(
+    modifier: Modifier = Modifier,
+    glowingColor: Color,
+    circleRadius: Dp = 0.dp,
+    glowingRadius: Dp = 20.dp,
+    xShifting: Dp = 0.dp,
+    yShifting: Dp = 0.dp,
+) {
+    Box(
+        modifier = modifier
+            .drawBehind {
+                val size = this.size
+                drawContext.canvas.nativeCanvas.apply {
+                    drawCircle(
+                        size.width,
+                        size.height,
+                        circleRadius.toPx(),
+                        Paint().apply {
+                            style = android.graphics.Paint.Style.STROKE
+                            strokeWidth = 5f
+                            color = glowingColor.toArgb()
+                            setShadowLayer(
+                                glowingRadius.toPx(),
+                                xShifting.toPx(), yShifting.toPx(),
+                                glowingColor.toArgb()
+                            )
+                        }
+                    )
+                }
+            }
+    ) {
+    }
+}
+
+@Preview
+@Composable
+fun GlowCirclePreview(){
+    Box(Modifier.size(200.dp),
+        contentAlignment = Alignment.Center)
+    {
+        GlowCricle(
+            glowingColor = Color.Yellow,
+            glowingRadius = 10.dp,
+            circleRadius = 50.dp
+        )
     }
 }
