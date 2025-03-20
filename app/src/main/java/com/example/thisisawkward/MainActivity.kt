@@ -45,7 +45,7 @@ class MainActivity : ComponentActivity() {
                    composable("myProfile"){
                        MyProfileScreen(navController)
                    }
-                   composable("on date"){
+                   composable("onDate"){
                        OnDateScreen(navController)
                    }
 

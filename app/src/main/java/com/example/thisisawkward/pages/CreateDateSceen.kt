@@ -45,14 +45,14 @@ fun CreateDateScreen(navController: NavController) {
     Background(id = R.drawable.background)
     Column(modifier = Modifier.fillMaxSize()){
         Header()
-        DateForm()
+        DateForm(navController)
         Spacer(modifier = Modifier.weight(1f))
         Footer(navController)
     }
 }
 
 @Composable
-fun DateForm() {
+fun DateForm(navController: NavController) {
     var time = rememberSaveable { mutableStateOf("") }
     var date = rememberSaveable { mutableStateOf("") }
     var location = rememberSaveable { mutableStateOf("") }
@@ -95,7 +95,7 @@ fun DateForm() {
             Spacer(modifier = Modifier.height(12.dp))
 
             Button(
-                onClick = { /* Handle form submission */ },
+                onClick = { navController.navigate("onDate") },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = LightBlue)
             ) {
