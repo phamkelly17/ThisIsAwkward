@@ -33,6 +33,8 @@ import com.example.thisisawkward.components.Header
 import com.example.thisisawkward.components.TextField
 import com.example.thisisawkward.components.UploadImageButton
 import com.example.thisisawkward.ui.theme.LightBlue
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 @Preview
 @Composable
@@ -45,14 +47,14 @@ fun CreateDateScreen(navController: NavController) {
     Background(id = R.drawable.background)
     Column(modifier = Modifier.fillMaxSize()){
         Header()
-        DateForm(navController)
+        DateForm()
         Spacer(modifier = Modifier.weight(1f))
         Footer(navController)
     }
 }
 
 @Composable
-fun DateForm(navController: NavController) {
+fun DateForm() {
     var time = rememberSaveable { mutableStateOf("") }
     var date = rememberSaveable { mutableStateOf("") }
     var location = rememberSaveable { mutableStateOf("") }
@@ -95,7 +97,7 @@ fun DateForm(navController: NavController) {
             Spacer(modifier = Modifier.height(12.dp))
 
             Button(
-                onClick = { navController.navigate("onDate") },
+                onClick = { /* Handle form submission */ },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = LightBlue)
             ) {

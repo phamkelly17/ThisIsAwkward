@@ -32,18 +32,32 @@ import com.example.thisisawkward.components.Background
 import com.example.thisisawkward.components.TextField
 import com.example.thisisawkward.ui.theme.Gray2
 import com.example.thisisawkward.ui.theme.Maroon
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
-fun LoginScreen(navController: NavController) {
-    var loginField = rememberSaveable { mutableStateOf("") }
+fun LoginScreen(navController: NavController, auth: FirebaseAuth) {
+    var emailField = rememberSaveable { mutableStateOf("") }
     var passwordField = rememberSaveable { mutableStateOf("") }
+    var errorMessage = rememberSaveable { mutableStateOf("") }
 
-    fun onLoginChange (newValue: String) {
-        loginField.value = newValue
+    fun onEmailChange (newValue: String) {
+        emailField.value = newValue
     }
 
     fun onPasswordChange (newValue: String) {
         passwordField.value = newValue
+    }
+
+    fun login (email: String, password: String) {
+        auth.signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    navController.navigate("home")
+                } else {
+                    errorMessage.value = task.exception?.localizedMessage ?: "An unknown error occurred"
+                }
+
+            }
     }
 
     Background(id = R.drawable.login_background)
@@ -82,7 +96,7 @@ fun LoginScreen(navController: NavController) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.padding(top = 10.dp)
                 ) {
-                TextField(label = "E-mail", fieldValue = loginField, onChange = ::onLoginChange)
+                TextField(label = "E-mail", fieldValue = emailField, onChange = ::onEmailChange)
                 TextField(label = "Password", fieldValue = passwordField, onChange = ::onPasswordChange, isPasswordField = true)
                 Text(
                     text = "Forgot Password?",
@@ -94,7 +108,7 @@ fun LoginScreen(navController: NavController) {
                 )
 
                 Button(
-                    onClick = { navController.navigate("home") },
+                    onClick = { login(emailField.value, passwordField.value) },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Maroon,
                         contentColor = Color.White
@@ -127,7 +141,7 @@ fun LoginScreen(navController: NavController) {
                         fontSize = 20.sp,
                         modifier = Modifier
                             .clickable {
-                            navController.navigate("signup")
+                                navController.navigate("signup")
                             }
                     )
                 }

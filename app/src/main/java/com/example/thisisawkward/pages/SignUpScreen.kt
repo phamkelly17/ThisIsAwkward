@@ -1,5 +1,6 @@
 package com.example.thisisawkward.pages
 
+import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,10 +22,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
@@ -36,9 +39,11 @@ import com.example.thisisawkward.components.Background
 import com.example.thisisawkward.components.TextField
 import com.example.thisisawkward.ui.theme.Gray2
 import com.example.thisisawkward.ui.theme.Maroon
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 @Composable
-fun SignUpScreen(navController: NavController) {
+fun SignUpScreen(navController: NavController, auth: FirebaseAuth, db: FirebaseFirestore) {
     var nameField = rememberSaveable { mutableStateOf("") }
     var ageField = rememberSaveable { mutableStateOf("") }
     var regionField = rememberSaveable { mutableStateOf("") }
@@ -46,6 +51,7 @@ fun SignUpScreen(navController: NavController) {
     var passwordField = rememberSaveable { mutableStateOf("") }
     var reenterPasswordField = rememberSaveable { mutableStateOf("") }
     var checked = rememberSaveable { mutableStateOf(false) }
+    var errorMessage = rememberSaveable { mutableStateOf("") }
 
     fun onNameChange (newValue: String) {
         nameField.value = newValue
@@ -71,6 +77,29 @@ fun SignUpScreen(navController: NavController) {
         ageField.value = newValue
     }
 
+    fun signup (email: String, password: String) {
+        auth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val user = auth.currentUser
+
+                    val userData = hashMapOf(
+                        "name" to nameField.value,
+                        "age" to ageField.value,
+                        "region" to regionField.value
+                    )
+
+                    user?.let {
+                        db.collection("users").document(it.uid).set(userData)
+                            .addOnFailureListener { errorMessage.value = it.localizedMessage }
+                    }
+
+                    navController.navigate("home")
+                } else {
+                    errorMessage.value = task.exception?.localizedMessage ?: "An unknown error occurred"
+                }
+            }
+    }
 
     Background(id = R.drawable.signup_background)
 
@@ -159,7 +188,7 @@ fun SignUpScreen(navController: NavController) {
         }
 
         Button(
-            onClick = { navController.navigate("home") },
+            onClick = { signup(emailField.value, passwordField.value) },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Maroon,
                 contentColor = Color.White

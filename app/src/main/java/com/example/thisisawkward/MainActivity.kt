@@ -14,8 +14,13 @@ import com.example.thisisawkward.pages.LoginScreen
 import com.example.thisisawkward.pages.MyProfileScreen
 import com.example.thisisawkward.pages.OnDateScreen
 import com.example.thisisawkward.pages.SignUpScreen
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 class MainActivity : ComponentActivity() {
+    private val auth by lazy { FirebaseAuth.getInstance() }
+    private val db by lazy { FirebaseFirestore.getInstance() }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -31,16 +36,16 @@ class MainActivity : ComponentActivity() {
                        LandingScreen(navController)
                    }
                    composable("login"){
-                       LoginScreen(navController)
+                       LoginScreen(navController, auth)
                    }
                    composable("signup"){
-                       SignUpScreen(navController)
+                       SignUpScreen(navController, auth, db)
                    }
                    composable("home"){
                        HomeScreen(navController)
                    }
                    composable("createDate"){
-                       CreateDateScreen(navController)
+                       CreateDateScreen(navController, auth, db)
                    }
                    composable("myProfile"){
                        MyProfileScreen(navController)
