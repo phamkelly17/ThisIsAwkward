@@ -14,6 +14,7 @@ val LightBlue = Color(0xFF9DB1E6)
 
 val ButtonGreen = Color(0xFF8AF88A)
 val ButtonRed = Color(0xFFF95B45)
+val ButtonPink = Color(0xFFD05272)
 val Maroon  = Color(0xFF4B2D2D)
 val Gray = Color(0xFF9E9898)
 val Gray2 = Color(0xFFCDC3C3)
