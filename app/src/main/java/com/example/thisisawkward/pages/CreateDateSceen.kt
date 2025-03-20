@@ -33,32 +33,63 @@ import com.example.thisisawkward.components.Header
 import com.example.thisisawkward.components.TextField
 import com.example.thisisawkward.components.UploadImageButton
 import com.example.thisisawkward.ui.theme.LightBlue
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
-@Preview
-@Composable
-fun PreviewCreateDateScreen() {
-    CreateDateScreen(rememberNavController())
-}
+// TODO: this won't work when auth and db variables are added
+//@Preview
+//@Composable
+//fun PreviewCreateDateScreen() {
+//    CreateDateScreen(rememberNavController(), auth, db)
+//}
 
 @Composable
-fun CreateDateScreen(navController: NavController) {
+fun CreateDateScreen(navController: NavController, auth: FirebaseAuth, db: FirebaseFirestore) {
     Background(id = R.drawable.background)
     Column(modifier = Modifier.fillMaxSize()){
         Header()
-        DateForm()
+        DateForm(auth, db)
         Spacer(modifier = Modifier.weight(1f))
         Footer(navController)
     }
 }
 
 @Composable
-fun DateForm() {
+fun DateForm(auth: FirebaseAuth, db: FirebaseFirestore) {
     var time = rememberSaveable { mutableStateOf("") }
     var date = rememberSaveable { mutableStateOf("") }
     var location = rememberSaveable { mutableStateOf("") }
     var modusOperandi = rememberSaveable { mutableStateOf("") }
     var additionalDetails = rememberSaveable { mutableStateOf("") }
     var imageUri = rememberSaveable { mutableStateOf<String?>(null) }
+    var errorMessage = rememberSaveable { mutableStateOf("") }
+
+    fun submitDate () {
+        val user = auth.currentUser
+
+        val dateData = hashMapOf(
+            "time" to time.value,
+            "date" to date.value,
+            "location" to location.value,
+            "modusOperandi" to modusOperandi.value,
+            "additionalDetails" to additionalDetails.value
+        )
+
+        user?.let {
+            db.collection("users")
+                .document(it.uid)
+                .collection("dates")
+                .add(dateData)
+                .addOnSuccessListener {
+                    time.value = ""
+                    date.value = ""
+                    location.value = ""
+                    modusOperandi.value = ""
+                    additionalDetails.value = ""
+                }
+                .addOnFailureListener { errorMessage.value = it.localizedMessage }
+        }
+    }
 
     Card(
         modifier = Modifier
@@ -95,7 +126,7 @@ fun DateForm() {
             Spacer(modifier = Modifier.height(12.dp))
 
             Button(
-                onClick = { /* Handle form submission */ },
+                onClick = { submitDate() },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = LightBlue)
             ) {
