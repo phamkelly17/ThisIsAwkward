@@ -24,7 +24,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.thisisawkward.R
+import com.example.thisisawkward.components.Footer
 
 /*
 * TODO:
@@ -35,7 +37,7 @@ import com.example.thisisawkward.R
  */
 
 @Composable
-fun MyProfileScreen() {
+fun MyProfileScreen(navController: NavController) {
     var modusOperandum by remember { mutableStateOf("Strategic crashing expert.\nMaster of blending into any scene.") }
     val scrollState = rememberScrollState()
     val context = LocalContext.current
@@ -48,7 +50,7 @@ fun MyProfileScreen() {
         Spacer(modifier = Modifier.height(30.dp)) // Pushes everything down to avoid status bar overlap
 
         Box(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.height(687.dp),
             contentAlignment = Alignment.TopCenter
         ) {
             // Profile Picture as Background
@@ -196,6 +198,7 @@ fun MyProfileScreen() {
                 }
             }
         }
+        Footer(navController)
     }
 }
 
