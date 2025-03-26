@@ -24,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.thisisawkward.R
@@ -33,6 +34,7 @@ import com.example.thisisawkward.components.Header
 import com.example.thisisawkward.components.TextField
 import com.example.thisisawkward.components.UploadImageButton
 import com.example.thisisawkward.ui.theme.LightBlue
+import com.example.thisisawkward.viewmodels.DateViewModel
 
 @Preview
 @Composable
@@ -45,20 +47,34 @@ fun CreateDateScreen(navController: NavController) {
     Background(id = R.drawable.background)
     Column(modifier = Modifier.fillMaxSize()){
         Header()
-        DateForm(navController)
+        DateForm()
         Spacer(modifier = Modifier.weight(1f))
         Footer(navController)
     }
 }
 
 @Composable
-fun DateForm(navController: NavController) {
+fun DateForm() {
     var time = rememberSaveable { mutableStateOf("") }
     var date = rememberSaveable { mutableStateOf("") }
     var location = rememberSaveable { mutableStateOf("") }
     var modusOperandi = rememberSaveable { mutableStateOf("") }
     var additionalDetails = rememberSaveable { mutableStateOf("") }
     var imageUri = rememberSaveable { mutableStateOf<String?>(null) }
+    var errorMessage = rememberSaveable { mutableStateOf("") }
+
+    val dateViewModel: DateViewModel = viewModel()
+
+    fun submitDate () {
+        dateViewModel.createDate(
+            time,
+            date,
+            location,
+            modusOperandi,
+            additionalDetails,
+            errorMessage
+        )
+    }
 
     Card(
         modifier = Modifier
@@ -95,7 +111,7 @@ fun DateForm(navController: NavController) {
             Spacer(modifier = Modifier.height(12.dp))
 
             Button(
-                onClick = { navController.navigate("onDate") },
+                onClick = { submitDate() },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = LightBlue)
             ) {

@@ -26,24 +26,35 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.thisisawkward.R
 import com.example.thisisawkward.components.Background
 import com.example.thisisawkward.components.TextField
 import com.example.thisisawkward.ui.theme.Gray2
 import com.example.thisisawkward.ui.theme.Maroon
+import com.example.thisisawkward.viewmodels.AuthViewModel
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun LoginScreen(navController: NavController) {
-    var loginField = rememberSaveable { mutableStateOf("") }
+    var emailField = rememberSaveable { mutableStateOf("") }
     var passwordField = rememberSaveable { mutableStateOf("") }
+    var errorMessage = rememberSaveable { mutableStateOf("") }
 
-    fun onLoginChange (newValue: String) {
-        loginField.value = newValue
+    val authViewModel: AuthViewModel = viewModel()
+
+    fun onEmailChange (newValue: String) {
+        emailField.value = newValue
     }
 
     fun onPasswordChange (newValue: String) {
         passwordField.value = newValue
+    }
+
+    fun login (email: String, password: String) {
+        authViewModel.login(email, password, navController, errorMessage)
     }
 
     Background(id = R.drawable.login_background)
@@ -82,7 +93,7 @@ fun LoginScreen(navController: NavController) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.padding(top = 10.dp)
                 ) {
-                TextField(label = "E-mail", fieldValue = loginField, onChange = ::onLoginChange)
+                TextField(label = "E-mail", fieldValue = emailField, onChange = ::onEmailChange)
                 TextField(label = "Password", fieldValue = passwordField, onChange = ::onPasswordChange, isPasswordField = true)
                 Text(
                     text = "Forgot Password?",
@@ -94,7 +105,7 @@ fun LoginScreen(navController: NavController) {
                 )
 
                 Button(
-                    onClick = { navController.navigate("home") },
+                    onClick = { login(emailField.value, passwordField.value) },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Maroon,
                         contentColor = Color.White
@@ -127,7 +138,7 @@ fun LoginScreen(navController: NavController) {
                         fontSize = 20.sp,
                         modifier = Modifier
                             .clickable {
-                            navController.navigate("signup")
+                                navController.navigate("signup")
                             }
                     )
                 }

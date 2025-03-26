@@ -16,6 +16,7 @@ import com.example.thisisawkward.pages.OnDateScreen
 import com.example.thisisawkward.pages.SignUpScreen
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()

@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,7 +18,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.draw.drawBehind
@@ -30,12 +28,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.thisisawkward.R
 import com.example.thisisawkward.components.Background
 import com.example.thisisawkward.components.TextField
 import com.example.thisisawkward.ui.theme.Gray2
 import com.example.thisisawkward.ui.theme.Maroon
+import com.example.thisisawkward.viewmodels.AuthViewModel
 
 @Composable
 fun SignUpScreen(navController: NavController) {
@@ -46,6 +46,9 @@ fun SignUpScreen(navController: NavController) {
     var passwordField = rememberSaveable { mutableStateOf("") }
     var reenterPasswordField = rememberSaveable { mutableStateOf("") }
     var checked = rememberSaveable { mutableStateOf(false) }
+    var errorMessage = rememberSaveable { mutableStateOf("") }
+
+    val authViewModel: AuthViewModel = viewModel()
 
     fun onNameChange (newValue: String) {
         nameField.value = newValue
@@ -71,6 +74,17 @@ fun SignUpScreen(navController: NavController) {
         ageField.value = newValue
     }
 
+    fun signup (email: String, password: String) {
+        authViewModel.signup(
+            email,
+            password,
+            nameField.value,
+            ageField.value,
+            regionField.value,
+            navController,
+            errorMessage
+        )
+    }
 
     Background(id = R.drawable.signup_background)
 
@@ -159,7 +173,7 @@ fun SignUpScreen(navController: NavController) {
         }
 
         Button(
-            onClick = { navController.navigate("home") },
+            onClick = { signup(emailField.value, passwordField.value) },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Maroon,
                 contentColor = Color.White
