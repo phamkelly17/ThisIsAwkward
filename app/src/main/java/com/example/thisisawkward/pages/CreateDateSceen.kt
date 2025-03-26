@@ -24,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.thisisawkward.R
@@ -33,8 +34,7 @@ import com.example.thisisawkward.components.Header
 import com.example.thisisawkward.components.TextField
 import com.example.thisisawkward.components.UploadImageButton
 import com.example.thisisawkward.ui.theme.LightBlue
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
+import com.example.thisisawkward.viewmodels.DateViewModel
 
 @Preview
 @Composable
@@ -61,6 +61,20 @@ fun DateForm() {
     var modusOperandi = rememberSaveable { mutableStateOf("") }
     var additionalDetails = rememberSaveable { mutableStateOf("") }
     var imageUri = rememberSaveable { mutableStateOf<String?>(null) }
+    var errorMessage = rememberSaveable { mutableStateOf("") }
+
+    val dateViewModel: DateViewModel = viewModel()
+
+    fun submitDate () {
+        dateViewModel.createDate(
+            time,
+            date,
+            location,
+            modusOperandi,
+            additionalDetails,
+            errorMessage
+        )
+    }
 
     Card(
         modifier = Modifier

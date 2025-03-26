@@ -26,19 +26,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.thisisawkward.R
 import com.example.thisisawkward.components.Background
 import com.example.thisisawkward.components.TextField
 import com.example.thisisawkward.ui.theme.Gray2
 import com.example.thisisawkward.ui.theme.Maroon
+import com.example.thisisawkward.viewmodels.AuthViewModel
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable
-fun LoginScreen(navController: NavController, auth: FirebaseAuth) {
+fun LoginScreen(navController: NavController) {
     var emailField = rememberSaveable { mutableStateOf("") }
     var passwordField = rememberSaveable { mutableStateOf("") }
     var errorMessage = rememberSaveable { mutableStateOf("") }
+
+    val authViewModel: AuthViewModel = viewModel()
 
     fun onEmailChange (newValue: String) {
         emailField.value = newValue
@@ -49,15 +54,7 @@ fun LoginScreen(navController: NavController, auth: FirebaseAuth) {
     }
 
     fun login (email: String, password: String) {
-        auth.signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    navController.navigate("home")
-                } else {
-                    errorMessage.value = task.exception?.localizedMessage ?: "An unknown error occurred"
-                }
-
-            }
+        authViewModel.login(email, password, navController, errorMessage)
     }
 
     Background(id = R.drawable.login_background)
