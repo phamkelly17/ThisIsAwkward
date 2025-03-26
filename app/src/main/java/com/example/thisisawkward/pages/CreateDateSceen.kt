@@ -111,7 +111,7 @@ fun DateForm() {
             Spacer(modifier = Modifier.height(12.dp))
 
             Button(
-                onClick = { /* Handle form submission */ },
+                onClick = { submitDate() },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = LightBlue)
             ) {
