@@ -10,4 +10,4 @@ local.properties
 /.idea/**
 # Google services configuration file
 app/google-services.json
-app/secrets.properties
+/secrets.properties
