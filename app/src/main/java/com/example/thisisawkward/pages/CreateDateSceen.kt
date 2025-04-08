@@ -29,12 +29,21 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.thisisawkward.R
 import com.example.thisisawkward.components.Background
+import com.example.thisisawkward.components.DatePickerField
 import com.example.thisisawkward.components.Footer
 import com.example.thisisawkward.components.Header
 import com.example.thisisawkward.components.TextField
+import com.example.thisisawkward.components.TimePickerField
 import com.example.thisisawkward.components.UploadImageButton
 import com.example.thisisawkward.ui.theme.LightBlue
 import com.example.thisisawkward.viewmodels.DateViewModel
+
+import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import com.example.thisisawkward.components.convertMillisToDate
+import com.example.thisisawkward.components.formatTime
 
 @Preview
 @Composable
@@ -63,6 +72,10 @@ fun DateForm() {
     var imageUri = rememberSaveable { mutableStateOf<String?>(null) }
     var errorMessage = rememberSaveable { mutableStateOf("") }
 
+    var selectedDate by remember { mutableStateOf<Long?>(null) }
+    var selectedHour by remember { mutableStateOf<Int?>(null) }
+    var selectedMinute by remember { mutableStateOf<Int?>(null) }
+
     val dateViewModel: DateViewModel = viewModel()
 
     fun submitDate () {
@@ -74,6 +87,10 @@ fun DateForm() {
             additionalDetails,
             errorMessage
         )
+
+        selectedDate = null
+        selectedHour = null
+        selectedMinute = null
     }
 
     Card(
@@ -100,8 +117,15 @@ fun DateForm() {
             )
             Spacer(modifier = Modifier.height(12.dp))
 
-            TextField(labelColor = Color.DarkGray, label = "Time", fieldValue = time, onChange = { time.value = it })
-            TextField(labelColor = Color.DarkGray, label = "Date", fieldValue = date, onChange = { date.value = it })
+            TimePickerField(selectedHour, selectedMinute, onChange = { hour, minute ->
+                selectedHour = hour
+                selectedMinute = minute
+                time.value = formatTime(hour, minute)
+            })
+            DatePickerField(selectedDate = selectedDate, onChange = { millis ->
+                date.value = convertMillisToDate(millis)
+                selectedDate = millis
+            })
             TextField(labelColor = Color.DarkGray, label = "Location", fieldValue = location, onChange = { location.value = it })
             TextField(labelColor = Color.DarkGray, label = "Preferred Modus Operandi", fieldValue = modusOperandi, onChange = { modusOperandi.value = it })
             TextField(labelColor = Color.DarkGray, label = "Additional Details", fieldValue = additionalDetails, onChange = { additionalDetails.value = it }, numLines = 2)
