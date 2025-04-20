@@ -41,7 +41,7 @@ fun Footer(navController: NavController) {
                     .size(85.dp)
                     .padding(horizontal = 13.dp)
                     .clickable {
-                        navController.navigate("home")
+                        navController.navigate("homeLoadingScreen")
                     }
             )
             Image(

@@ -15,6 +15,7 @@ import java.util.*
 
 @Composable
 fun TimePickerField(
+    label: String,
     selectedHour: Int?,
     selectedMinute: Int?,
     onChange: (Int, Int) -> Unit,
@@ -25,7 +26,7 @@ fun TimePickerField(
 
     Column {
         Text(
-            text = "Time",
+            text = label,
             color = Color.DarkGray,
             style = TextStyle(fontSize = 20.sp),
             modifier = Modifier.padding(horizontal = 15.dp, vertical = 4.dp)
@@ -49,8 +50,6 @@ fun TimePickerField(
         TimePickerDialog(
             onDismiss = { showDialog = false },
             onTimeSelected = { hour, minute ->
-//                selectedHour = hour
-//                selectedMinute = minute
                 onChange(hour, minute)
             }
         )
