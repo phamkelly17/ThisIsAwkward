@@ -64,7 +64,8 @@ fun CreateDateScreen(navController: NavController) {
 
 @Composable
 fun DateForm() {
-    var time = rememberSaveable { mutableStateOf("") }
+    var startTime = rememberSaveable { mutableStateOf("") }
+    var endTime = rememberSaveable { mutableStateOf("") }
     var date = rememberSaveable { mutableStateOf("") }
     var location = rememberSaveable { mutableStateOf("") }
     var modusOperandi = rememberSaveable { mutableStateOf("") }
@@ -73,14 +74,17 @@ fun DateForm() {
     var errorMessage = rememberSaveable { mutableStateOf("") }
 
     var selectedDate by remember { mutableStateOf<Long?>(null) }
-    var selectedHour by remember { mutableStateOf<Int?>(null) }
-    var selectedMinute by remember { mutableStateOf<Int?>(null) }
+    var selectedStartHour by remember { mutableStateOf<Int?>(null) }
+    var selectedStartMinute by remember { mutableStateOf<Int?>(null) }
+    var selectedEndHour by remember { mutableStateOf<Int?>(null) }
+    var selectedEndMinute by remember { mutableStateOf<Int?>(null) }
 
     val dateViewModel: DateViewModel = viewModel()
 
     fun submitDate () {
         dateViewModel.createDate(
-            time,
+            startTime,
+            endTime,
             date,
             location,
             modusOperandi,
@@ -89,8 +93,10 @@ fun DateForm() {
         )
 
         selectedDate = null
-        selectedHour = null
-        selectedMinute = null
+        selectedStartHour = null
+        selectedStartMinute = null
+        selectedEndHour = null
+        selectedEndMinute = null
     }
 
     Card(
@@ -117,11 +123,18 @@ fun DateForm() {
             )
             Spacer(modifier = Modifier.height(12.dp))
 
-            TimePickerField(selectedHour, selectedMinute, onChange = { hour, minute ->
-                selectedHour = hour
-                selectedMinute = minute
-                time.value = formatTime(hour, minute)
+            TimePickerField("Start Time", selectedStartHour, selectedStartMinute, onChange = { hour, minute ->
+                selectedStartHour = hour
+                selectedStartMinute = minute
+                startTime.value = formatTime(hour, minute)
             })
+
+            TimePickerField("End Time", selectedEndHour, selectedEndMinute, onChange = { hour, minute ->
+                selectedEndHour = hour
+                selectedEndMinute = minute
+                endTime.value = formatTime(hour, minute)
+            })
+
             DatePickerField(selectedDate = selectedDate, onChange = { millis ->
                 date.value = convertMillisToDate(millis)
                 selectedDate = millis
