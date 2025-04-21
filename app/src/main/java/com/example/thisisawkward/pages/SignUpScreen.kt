@@ -43,6 +43,7 @@ fun SignUpScreen(navController: NavController) {
     var ageField = rememberSaveable { mutableStateOf("") }
     var regionField = rememberSaveable { mutableStateOf("") }
     var emailField = rememberSaveable { mutableStateOf("") }
+    var phoneField = rememberSaveable { mutableStateOf("") }
     var passwordField = rememberSaveable { mutableStateOf("") }
     var reenterPasswordField = rememberSaveable { mutableStateOf("") }
     var checked = rememberSaveable { mutableStateOf(false) }
@@ -74,6 +75,10 @@ fun SignUpScreen(navController: NavController) {
         ageField.value = newValue
     }
 
+    fun onPhoneChange (newValue: String) {
+        phoneField.value = newValue
+    }
+
     fun signup (email: String, password: String) {
         authViewModel.signup(
             email,
@@ -81,6 +86,7 @@ fun SignUpScreen(navController: NavController) {
             nameField.value,
             ageField.value,
             regionField.value,
+            phoneField.value,
             navController,
             errorMessage
         )
@@ -128,6 +134,8 @@ fun SignUpScreen(navController: NavController) {
                 TextField(label = "Age", fieldValue = ageField, onChange = ::onAgeChange, isNumberField = true)
                 TextField(label = "Region", fieldValue = regionField, onChange = ::onRegionChange)
                 TextField(label = "Email", fieldValue = emailField, onChange = ::onEmailChange)
+                TextField(label = "Phone Number", fieldValue = phoneField, onChange = ::onPhoneChange, isNumberField = true)
+
             }
         }
 

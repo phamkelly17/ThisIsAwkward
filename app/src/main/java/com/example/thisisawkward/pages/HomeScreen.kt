@@ -20,9 +20,19 @@ import com.example.thisisawkward.components.Alert
 import com.example.thisisawkward.components.Background
 import com.example.thisisawkward.components.Footer
 import com.example.thisisawkward.components.Header
+import com.example.thisisawkward.viewmodels.DateViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreen(navController: NavController) {
+    val dateViewModel: DateViewModel = viewModel()
+
+    LaunchedEffect(Unit) {
+        dateViewModel.getDates { dateList ->
+            println("Final dates: $dateList")
+        }
+    }
+
     Background(id = R.drawable.background)
     Column(modifier = Modifier.fillMaxSize()){
         Header()

@@ -66,7 +66,7 @@ fun Alert() {
                         Text("Eloise Kurian", modifier = Modifier.padding(horizontal = 5.dp), color = Maroon)
                     }
                     Row (modifier = Modifier.padding(horizontal = 10.dp)){
-                        Text("Location:", fontWeight = FontWeight.Bold, color = Maroon)
+                        Text("Contact:", fontWeight = FontWeight.Bold, color = Maroon)
                         Text("Cafe Rouge", modifier = Modifier.padding(horizontal = 5.dp), color = Maroon)
                     }
                     Row (modifier = Modifier.padding(horizontal = 10.dp)){
@@ -94,8 +94,12 @@ fun Alert() {
                             Text("Call me with a family emergency!", modifier = Modifier.padding(horizontal = 5.dp), color = Maroon)
                         }
                         Row (modifier = Modifier.padding(horizontal = 10.dp)){
-                            Text("Location:", fontWeight = FontWeight.Bold, color = Maroon)
-                            Text("Cafe Rouge", modifier = Modifier.padding(horizontal = 5.dp), color = Maroon)
+                            Text("Contact:", fontWeight = FontWeight.Bold, color = Maroon)
+                            Text("+34 111 111 1111", modifier = Modifier.padding(horizontal = 5.dp), color = Maroon)
+                        }
+                        Column (modifier = Modifier.padding(horizontal = 10.dp)){
+                            Text("Additional Details:", fontWeight = FontWeight.Bold, color = Maroon)
+                            Text("Wearing a yellow shirt!", modifier = Modifier.padding(horizontal = 5.dp), color = Maroon)
                         }
                     }
                 }
