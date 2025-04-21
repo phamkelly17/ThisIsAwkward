@@ -26,7 +26,6 @@ class AuthViewModel : ViewModel() {
         password: String,
         name: String,
         age: String,
-        region: String,
         phone: String,
         navController: NavController,
         errorMessage: MutableState<String>
@@ -39,7 +38,6 @@ class AuthViewModel : ViewModel() {
                     val userData = hashMapOf(
                         "name" to name,
                         "age" to age,
-                        "region" to region,
                         "phone" to phone
                     )
 

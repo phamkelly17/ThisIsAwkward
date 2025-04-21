@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.runtime.Composable
@@ -26,10 +27,12 @@ import com.example.thisisawkward.viewmodels.DateViewModel
 @Composable
 fun HomeScreen(navController: NavController) {
     val dateViewModel: DateViewModel = viewModel()
-
+    val dates = rememberSaveable {
+        mutableStateOf<List<Map<String, Any>>>(emptyList())
+    }
     LaunchedEffect(Unit) {
         dateViewModel.getDates { dateList ->
-            println("Final dates: $dateList")
+            dates.value = dateList
         }
     }
 
@@ -43,8 +46,8 @@ fun HomeScreen(navController: NavController) {
                 .weight(1f)
                 .fillMaxHeight()
         ) {
-            items(50) { _ ->
-                Alert()
+            items(dates.value) { date ->
+                Alert(date)
             }
         }
         Footer(navController)

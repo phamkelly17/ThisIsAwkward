@@ -90,80 +90,87 @@ class DateViewModel : ViewModel() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun getDates(callback: (List<Any>) -> Unit) {
+    fun getDates(callback: (List<Map<String, Any>>) -> Unit) {
         val dates = mutableListOf<Map<String, Any>>()
+        val user = FirebaseAuth.getInstance().currentUser
 
         user?.let {
             val currentUserId = it.uid
-            val tasks = mutableListOf<Task<DocumentSnapshot>>()
 
             FirebaseFirestore.getInstance()
                 .collectionGroup("dates")
                 .get()
                 .addOnSuccessListener { snapshot ->
-                    for (doc in snapshot) {
-                        val documentPath = doc.reference.path // This gives the full path
+                    val matchingDocs = snapshot.documents.filter { doc ->
+                        val documentPath = doc.reference.path
                         val pathParts = documentPath.split("/")
-                        val dateUserId = pathParts.getOrNull(1) // This should give the user ID from the path
+                        val dateUserId = pathParts.getOrNull(1)
+                        dateUserId != null && dateUserId != currentUserId
+                    }
 
-                        if (dateUserId != null && dateUserId != currentUserId) {
-                            val userTask = FirebaseFirestore.getInstance()
-                                .collection("users")
-                                .document(dateUserId)
-                                .get()
+                    if (matchingDocs.isEmpty()) {
+                        callback(emptyList())
+                        return@addOnSuccessListener
+                    }
 
-                            tasks.add(userTask)
+                    var completedCount = 0
 
-                            // Fetch the name of the user who created the date
-                            FirebaseFirestore.getInstance()
-                                .collection("users")
-                                .document(dateUserId)
-                                .get()
-                                .addOnSuccessListener { userDoc ->
-                                    val name = userDoc.getString("name") ?: ""
-                                    val phone = userDoc.getString("phone") ?: ""
+                    for (doc in matchingDocs) {
+                        val documentPath = doc.reference.path
+                        val pathParts = documentPath.split("/")
+                        val dateUserId = pathParts.getOrNull(1) ?: continue
 
-                                    val date = doc.getString("date")
-                                    val startTime = doc.getString("startTime")
-                                    val endTime = doc.getString("endTime")
+                        FirebaseFirestore.getInstance()
+                            .collection("users")
+                            .document(dateUserId)
+                            .get()
+                            .addOnSuccessListener { userDoc ->
+                                val name = userDoc.getString("name") ?: ""
+                                val phone = userDoc.getString("phone") ?: ""
 
-                                    if (
-                                        startTime != null &&
-                                        endTime != null && date != null &&
-                                        isDateHappeningNow(date, startTime, endTime) &&
-                                        doc.getBoolean("alertCreated") == true &&
-                                        doc.getBoolean("alertAccepted") == false
-                                    ) {
-                                        val location = doc.getString("location") ?: "N/A"
-                                        val modusOperandi = doc.getString("modusOperandi") ?: "N/A"
-                                        val additionalDetails = doc.getString("additionalDetails") ?: "N/A"
+                                val date = doc.getString("date")
+                                val startTime = doc.getString("startTime")
+                                val endTime = doc.getString("endTime")
 
-                                        dates.add(
-                                            hashMapOf(
-                                                "name" to name,
-                                                "location" to location,
-                                                "modusOperandi" to modusOperandi,
-                                                "phone" to phone,
-                                                "additionalDetails" to additionalDetails
-                                            )
+                                if (
+                                    startTime != null && endTime != null && date != null &&
+                                    isDateHappeningNow(date, startTime, endTime) &&
+                                    doc.getBoolean("alertCreated") == true &&
+                                    doc.getBoolean("alertAccepted") == false
+                                ) {
+                                    val location = doc.getString("location") ?: "N/A"
+                                    val modusOperandi = doc.getString("modusOperandi") ?: "N/A"
+                                    val additionalDetails = doc.getString("additionalDetails") ?: "N/A"
+
+                                    dates.add(
+                                        mapOf(
+                                            "id" to doc.id,
+                                            "userId" to userDoc.id,
+                                            "name" to name,
+                                            "location" to location,
+                                            "modusOperandi" to modusOperandi,
+                                            "phone" to phone,
+                                            "additionalDetails" to additionalDetails
                                         )
-                                    }
-                                    // After all users are fetched, trigger callback
-                                    if (dates.size == tasks.size) {
-                                        callback(dates)
-                                    }
+                                    )
+                                }
 
+                                completedCount++
+                                if (completedCount == matchingDocs.size) {
+                                    callback(dates)
                                 }
-                                .addOnFailureListener { e ->
-                                    println("Error fetching user name: $e")
+                            }
+                            .addOnFailureListener {
+                                completedCount++
+                                if (completedCount == matchingDocs.size) {
+                                    callback(dates)
                                 }
-                        }
+                            }
                     }
                 }
-            // If no matching dates, return empty
-            if (tasks.isEmpty()) {
-                callback(dates)
-            }
+                .addOnFailureListener {
+                    callback(emptyList())
+                }
         } ?: callback(emptyList())
     }
 
@@ -183,6 +190,21 @@ class DateViewModel : ViewModel() {
                     println("Error updating alertCreated: $e")
                 }
         }
+    }
+
+    fun acceptDateRequest(dateId: String, userId: String, value: Boolean) {
+        FirebaseFirestore.getInstance()
+            .collection("users")
+            .document(userId)
+            .collection("dates")
+            .document(dateId)
+            .update("alertAccepted", value)
+            .addOnSuccessListener {
+                println("alertAccepted updated successfully")
+            }
+            .addOnFailureListener { e ->
+                println("Error updating alertAccepted: $e")
+            }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
