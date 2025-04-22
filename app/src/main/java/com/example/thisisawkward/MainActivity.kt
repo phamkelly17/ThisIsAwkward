@@ -53,8 +53,11 @@ class MainActivity : ComponentActivity() {
                    composable("myProfile"){
                        MyProfileScreen(navController)
                    }
-                   composable("onDate"){
-                       OnDateScreen(navController)
+                   composable(
+                       "onDate/{dateId}"
+                   ) { backStackEntry ->
+                       val dateId = backStackEntry.arguments?.getString("dateId") ?: ""
+                       OnDateScreen(navController, dateId)
                    }
 
                }
