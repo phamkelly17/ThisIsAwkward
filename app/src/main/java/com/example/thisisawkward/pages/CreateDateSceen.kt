@@ -38,12 +38,12 @@ import com.example.thisisawkward.components.UploadImageButton
 import com.example.thisisawkward.ui.theme.LightBlue
 import com.example.thisisawkward.viewmodels.DateViewModel
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.example.thisisawkward.components.convertMillisToDate
 import com.example.thisisawkward.components.formatTime
+import com.example.thisisawkward.viewmodels.ProfileViewModel
 
 @Preview
 @Composable
@@ -80,6 +80,7 @@ fun DateForm() {
     var selectedEndMinute by remember { mutableStateOf<Int?>(null) }
 
     val dateViewModel: DateViewModel = viewModel()
+    val profileViewModel: ProfileViewModel = viewModel()
 
     fun submitDate () {
         dateViewModel.createDate(
@@ -97,6 +98,8 @@ fun DateForm() {
         selectedStartMinute = null
         selectedEndHour = null
         selectedEndMinute = null
+
+        profileViewModel.incrementStat("totalDates", 1)
     }
 
     Card(

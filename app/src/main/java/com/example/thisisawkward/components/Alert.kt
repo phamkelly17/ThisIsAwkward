@@ -33,6 +33,7 @@ import com.example.thisisawkward.ui.theme.ButtonGreen
 import com.example.thisisawkward.ui.theme.ButtonRed
 import com.example.thisisawkward.ui.theme.Maroon
 import com.example.thisisawkward.viewmodels.DateViewModel
+import com.example.thisisawkward.viewmodels.ProfileViewModel
 
 @Composable
 fun Alert(date: Map<String, Any>) {
@@ -46,10 +47,14 @@ fun Alert(date: Map<String, Any>) {
     val additionalDetails = date["additionalDetails"]
 
     val dateViewModel: DateViewModel = viewModel()
+    val profileViewModel: ProfileViewModel = viewModel()
 
     fun handleAcceptDateRequest () {
         requestAccepted.value = !requestAccepted.value
         dateViewModel.acceptDateRequest(id, userId, requestAccepted.value)
+        val increment = if (requestAccepted.value) 1.toLong() else -1
+        profileViewModel.incrementStat("datesCrashed", increment)
+        profileViewModel.incrementCrashedDates(userId, increment)
     }
 
     Box(modifier = Modifier
