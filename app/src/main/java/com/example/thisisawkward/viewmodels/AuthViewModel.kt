@@ -1,10 +1,18 @@
 package com.example.thisisawkward.viewmodels
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
+import java.util.Date
+import java.util.Locale
 
 class AuthViewModel : ViewModel() {
     private val auth by lazy { FirebaseAuth.getInstance() }
@@ -14,19 +22,20 @@ class AuthViewModel : ViewModel() {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    navController.navigate("home")
+                    navController.navigate("homeLoadingScreen")
                 } else {
                     errorMessage.value = task.exception?.localizedMessage ?: "An unknown error occurred"
                 }
             }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun signup (
         email: String,
         password: String,
         name: String,
         age: String,
-        region: String,
+        phone: String,
         navController: NavController,
         errorMessage: MutableState<String>
     ) {
@@ -38,7 +47,12 @@ class AuthViewModel : ViewModel() {
                     val userData = hashMapOf(
                         "name" to name,
                         "age" to age,
-                        "region" to region
+                        "phone" to phone,
+                        "dateJoined" to formatDateToWords(),
+                        "datesCrashed" to 0,
+                        "crashedDates" to 0,
+                        "totalDates" to 0,
+                        "modusOperandum" to ""
                     )
 
                     user?.let {
@@ -46,11 +60,18 @@ class AuthViewModel : ViewModel() {
                             .addOnFailureListener { errorMessage.value = it.localizedMessage }
                     }
 
-                    navController.navigate("home")
+                    navController.navigate("homeLoadingScreen")
                 } else {
                     errorMessage.value = task.exception?.localizedMessage ?: "An unknown error occurred"
                 }
             }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun formatDateToWords(): String {
+        val today = LocalDate.now()
+        val formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy")
+        return today.format(formatter)
     }
 
 }

@@ -24,6 +24,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.thisisawkward.R
 import com.example.thisisawkward.components.Background
 import com.example.thisisawkward.components.Footer
@@ -32,16 +33,23 @@ import com.example.thisisawkward.components.OnDateAnimation
 import com.example.thisisawkward.ui.theme.ButtonPink
 import com.example.thisisawkward.ui.theme.ButtonRed
 import com.example.thisisawkward.ui.theme.LightBlue
+import com.example.thisisawkward.viewmodels.DateViewModel
 
 
-@Preview
+//@Preview
+//@Composable
+//fun PreviewOnDateScreen() {
+//    OnDateScreen(rememberNavController())
+//}
+
 @Composable
-fun PreviewOnDateScreen() {
-    OnDateScreen(rememberNavController())
-}
+fun OnDateScreen(navController: NavController, dateId: String) {
+    val dateViewModel: DateViewModel = viewModel()
 
-@Composable
-fun OnDateScreen(navController: NavController) {
+    fun onCreateAlert() {
+        dateViewModel.createDateAlert(dateId)
+    }
+
     Background(id = R.drawable.background)
     Column(modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally){
@@ -49,7 +57,7 @@ fun OnDateScreen(navController: NavController) {
         Spacer(modifier = Modifier.weight(1f))
         OnDateAnimation()
         Spacer(modifier = Modifier.weight(1f))
-        ActionButtons(navController = navController)
+        ActionButtons(onCreateAlert = { onCreateAlert() })
         Spacer(modifier = Modifier.weight(2f))
         Footer(navController)
     }
@@ -57,6 +65,7 @@ fun OnDateScreen(navController: NavController) {
 
 @Composable
 fun ActionButtons(
+    onCreateAlert: () -> Unit,
     modifier: Modifier = Modifier,
     buttonSize: Dp = 80.dp,
     navController: NavController
@@ -110,9 +119,7 @@ fun ActionButtons(
                 .size(buttonSize)
                 .clip(CircleShape)
                 .background(ButtonRed)
-                .clickable {
-                    navController.navigate("mapScreen")
-                },
+                .clickable { onCreateAlert() },
             contentAlignment = Alignment.Center
         ) {
             Icon(

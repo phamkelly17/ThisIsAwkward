@@ -2,13 +2,12 @@ package com.example.thisisawkward.pages
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
@@ -20,27 +19,42 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.thisisawkward.R
 import com.example.thisisawkward.components.Footer
+import com.example.thisisawkward.viewmodels.ProfileViewModel
 
-/*
-* TODO:
-*  add footer
-* include map feature
-* make interactable
-* make scrollable
- */
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyProfileScreen(navController: NavController) {
-    var modusOperandum by remember { mutableStateOf("Strategic crashing expert.\nMaster of blending into any scene.") }
+    var modusOperandum by remember { mutableStateOf("") }
+    var editingModus = remember { mutableStateOf(false) }
+
     val scrollState = rememberScrollState()
     val context = LocalContext.current
+    var datesCrashed = remember { mutableStateOf(0) }
+    var crashedDates = remember { mutableStateOf(0) }
+    var totalDates = remember { mutableStateOf(0) }
+    var name = remember { mutableStateOf("") }
+    var dateJoined = remember { mutableStateOf("") }
+
+    val profileViewModel: ProfileViewModel = viewModel()
+
+    profileViewModel.getModusOperandum { modus ->
+        modusOperandum = modus
+    }
+
+    profileViewModel.getProfileInfo { dc, cd, td, n, dj ->
+        datesCrashed.value = dc
+        crashedDates.value = cd
+        totalDates.value = td
+        name.value = n
+        dateJoined.value = dj
+    }
 
     Column(
         modifier = Modifier
@@ -102,7 +116,7 @@ fun MyProfileScreen(navController: NavController) {
                         horizontalArrangement = Arrangement.Center
                     ) {
                         Text(
-                            text = "YOUR NAME",
+                            text = name.value,
                             fontSize = 24.sp,
                             fontWeight = FontWeight.Bold
                         )
@@ -120,7 +134,7 @@ fun MyProfileScreen(navController: NavController) {
                     }
 
                     Text(
-                        text = "Joined April 25, 2025",
+                        text = "Joined ${dateJoined.value}",
                         fontSize = 14.sp,
                         color = Color.Gray
                     )
@@ -132,9 +146,9 @@ fun MyProfileScreen(navController: NavController) {
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        ProfileStat("Dates Crashed", "17")
-                        ProfileStat("Crashed Dates", "4")
-                        ProfileStat("Total Dates", "6")
+                        ProfileStat("Dates Crashed", datesCrashed.value.toString())
+                        ProfileStat("Crashed Dates", crashedDates.value.toString())
+                        ProfileStat("Total Dates", totalDates.value.toString())
                     }
 
                     Spacer(modifier = Modifier.height(24.dp))
@@ -153,21 +167,49 @@ fun MyProfileScreen(navController: NavController) {
                                 .padding(horizontal = 12.dp, vertical = 8.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text(
-                                text = modusOperandum,
-                                fontSize = 16.sp,
-                                color = Color.Black,
-                                modifier = Modifier.weight(1f) // Ensures text takes most of the space
-                            )
-                            IconButton(
-                                onClick = { /* TODO: Open edit dialog */ },
-                                modifier = Modifier.size(24.dp)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Edit,
-                                    contentDescription = "Edit Modus Operandum",
-                                    tint = Color.DarkGray
+                            if (!editingModus.value) {
+                                Text(
+                                    text = modusOperandum,
+                                    fontSize = 16.sp,
+                                    color = Color.Black,
+                                    modifier = Modifier.weight(1f) // Ensures text takes most of the space
                                 )
+                                IconButton(
+                                    onClick = { editingModus.value = !editingModus.value },
+                                    modifier = Modifier.size(24.dp)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Edit,
+                                        contentDescription = "Edit Modus Operandum",
+                                        tint = Color.DarkGray
+                                    )
+                                }
+                            }
+                            else {
+                                TextField(
+                                    value = modusOperandum,
+                                    onValueChange = { modusOperandum = it },
+                                    colors = TextFieldDefaults.textFieldColors(
+                                        containerColor = Color.Transparent,
+                                        focusedIndicatorColor = Color.Transparent,
+                                        unfocusedIndicatorColor = Color.Transparent,
+                                        disabledIndicatorColor = Color.Transparent
+                                    ),
+                                    modifier = Modifier.weight(1f) // Ensures text takes most of the space
+                                )
+                                IconButton(
+                                    onClick = {
+                                        editingModus.value = !editingModus.value
+                                        profileViewModel.updateModusOperandum(modusOperandum)
+                                              },
+                                    modifier = Modifier.size(24.dp)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Check,
+                                        contentDescription = "Edit Modus Operandum",
+                                        tint = Color.DarkGray
+                                    )
+                                }
                             }
                         }
                     }

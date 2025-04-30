@@ -29,12 +29,21 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.thisisawkward.R
 import com.example.thisisawkward.components.Background
+import com.example.thisisawkward.components.DatePickerField
 import com.example.thisisawkward.components.Footer
 import com.example.thisisawkward.components.Header
 import com.example.thisisawkward.components.TextField
+import com.example.thisisawkward.components.TimePickerField
 import com.example.thisisawkward.components.UploadImageButton
 import com.example.thisisawkward.ui.theme.LightBlue
 import com.example.thisisawkward.viewmodels.DateViewModel
+
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import com.example.thisisawkward.components.convertMillisToDate
+import com.example.thisisawkward.components.formatTime
+import com.example.thisisawkward.viewmodels.ProfileViewModel
 
 @Preview
 @Composable
@@ -55,7 +64,8 @@ fun CreateDateScreen(navController: NavController) {
 
 @Composable
 fun DateForm() {
-    var time = rememberSaveable { mutableStateOf("") }
+    var startTime = rememberSaveable { mutableStateOf("") }
+    var endTime = rememberSaveable { mutableStateOf("") }
     var date = rememberSaveable { mutableStateOf("") }
     var location = rememberSaveable { mutableStateOf("") }
     var modusOperandi = rememberSaveable { mutableStateOf("") }
@@ -63,17 +73,33 @@ fun DateForm() {
     var imageUri = rememberSaveable { mutableStateOf<String?>(null) }
     var errorMessage = rememberSaveable { mutableStateOf("") }
 
+    var selectedDate by remember { mutableStateOf<Long?>(null) }
+    var selectedStartHour by remember { mutableStateOf<Int?>(null) }
+    var selectedStartMinute by remember { mutableStateOf<Int?>(null) }
+    var selectedEndHour by remember { mutableStateOf<Int?>(null) }
+    var selectedEndMinute by remember { mutableStateOf<Int?>(null) }
+
     val dateViewModel: DateViewModel = viewModel()
+    val profileViewModel: ProfileViewModel = viewModel()
 
     fun submitDate () {
         dateViewModel.createDate(
-            time,
+            startTime,
+            endTime,
             date,
             location,
             modusOperandi,
             additionalDetails,
             errorMessage
         )
+
+        selectedDate = null
+        selectedStartHour = null
+        selectedStartMinute = null
+        selectedEndHour = null
+        selectedEndMinute = null
+
+        profileViewModel.incrementStat("totalDates", 1)
     }
 
     Card(
@@ -100,8 +126,22 @@ fun DateForm() {
             )
             Spacer(modifier = Modifier.height(12.dp))
 
-            TextField(labelColor = Color.DarkGray, label = "Time", fieldValue = time, onChange = { time.value = it })
-            TextField(labelColor = Color.DarkGray, label = "Date", fieldValue = date, onChange = { date.value = it })
+            TimePickerField("Start Time", selectedStartHour, selectedStartMinute, onChange = { hour, minute ->
+                selectedStartHour = hour
+                selectedStartMinute = minute
+                startTime.value = formatTime(hour, minute)
+            })
+
+            TimePickerField("End Time", selectedEndHour, selectedEndMinute, onChange = { hour, minute ->
+                selectedEndHour = hour
+                selectedEndMinute = minute
+                endTime.value = formatTime(hour, minute)
+            })
+
+            DatePickerField(selectedDate = selectedDate, onChange = { millis ->
+                date.value = convertMillisToDate(millis)
+                selectedDate = millis
+            })
             TextField(labelColor = Color.DarkGray, label = "Location", fieldValue = location, onChange = { location.value = it })
             TextField(labelColor = Color.DarkGray, label = "Preferred Modus Operandi", fieldValue = modusOperandi, onChange = { modusOperandi.value = it })
             TextField(labelColor = Color.DarkGray, label = "Additional Details", fieldValue = additionalDetails, onChange = { additionalDetails.value = it }, numLines = 2)

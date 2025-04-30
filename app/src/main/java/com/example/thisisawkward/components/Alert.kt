@@ -27,14 +27,35 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.thisisawkward.R
 import com.example.thisisawkward.ui.theme.ButtonGreen
 import com.example.thisisawkward.ui.theme.ButtonRed
 import com.example.thisisawkward.ui.theme.Maroon
+import com.example.thisisawkward.viewmodels.DateViewModel
+import com.example.thisisawkward.viewmodels.ProfileViewModel
 
 @Composable
-fun Alert() {
+fun Alert(date: Map<String, Any>) {
     var requestAccepted = rememberSaveable { mutableStateOf(false) }
+    val id = date["id"] as? String ?: ""
+    val userId = date["userId"] as? String ?: ""
+    val name = date["name"]
+    val location = date["location"]
+    val modus = date["modusOperandi"]
+    val contact = date["phone"]
+    val additionalDetails = date["additionalDetails"]
+
+    val dateViewModel: DateViewModel = viewModel()
+    val profileViewModel: ProfileViewModel = viewModel()
+
+    fun handleAcceptDateRequest () {
+        requestAccepted.value = !requestAccepted.value
+        dateViewModel.acceptDateRequest(id, userId, requestAccepted.value)
+        val increment = if (requestAccepted.value) 1.toLong() else -1
+        profileViewModel.incrementStat("datesCrashed", increment)
+        profileViewModel.incrementCrashedDates(userId, increment)
+    }
 
     Box(modifier = Modifier
         .fillMaxHeight()
@@ -63,11 +84,11 @@ fun Alert() {
                 Column (modifier = Modifier.padding(vertical = 5.dp)){
                     Row (modifier = Modifier.padding(horizontal = 10.dp)){
                         Text("Name:", fontWeight = FontWeight.Bold, color = Maroon)
-                        Text("Eloise Kurian", modifier = Modifier.padding(horizontal = 5.dp), color = Maroon)
+                        Text(text = "$name", modifier = Modifier.padding(horizontal = 5.dp), color = Maroon)
                     }
                     Row (modifier = Modifier.padding(horizontal = 10.dp)){
                         Text("Location:", fontWeight = FontWeight.Bold, color = Maroon)
-                        Text("Cafe Rouge", modifier = Modifier.padding(horizontal = 5.dp), color = Maroon)
+                        Text("$location", modifier = Modifier.padding(horizontal = 5.dp), color = Maroon)
                     }
                     Row (modifier = Modifier.padding(horizontal = 10.dp)){
                         Text("ETA:", fontWeight = FontWeight.Bold, color = Maroon)
@@ -91,16 +112,20 @@ fun Alert() {
                     Column (modifier = Modifier.padding(vertical = 5.dp)){
                         Row (modifier = Modifier.padding(horizontal = 10.dp)){
                             Text("Modus:", fontWeight = FontWeight.Bold, color = Maroon)
-                            Text("Call me with a family emergency!", modifier = Modifier.padding(horizontal = 5.dp), color = Maroon)
+                            Text("$modus", modifier = Modifier.padding(horizontal = 5.dp), color = Maroon)
                         }
                         Row (modifier = Modifier.padding(horizontal = 10.dp)){
-                            Text("Location:", fontWeight = FontWeight.Bold, color = Maroon)
-                            Text("Cafe Rouge", modifier = Modifier.padding(horizontal = 5.dp), color = Maroon)
+                            Text("Contact:", fontWeight = FontWeight.Bold, color = Maroon)
+                            Text("$contact", modifier = Modifier.padding(horizontal = 5.dp), color = Maroon)
+                        }
+                        Column (modifier = Modifier.padding(horizontal = 10.dp)){
+                            Text("Additional Details:", fontWeight = FontWeight.Bold, color = Maroon)
+                            Text("$additionalDetails", modifier = Modifier.padding(horizontal = 5.dp), color = Maroon)
                         }
                     }
                 }
                 Button(
-                    onClick = { requestAccepted.value = !requestAccepted.value },
+                    onClick = { handleAcceptDateRequest() },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = if (requestAccepted.value) ButtonRed else ButtonGreen,
                         contentColor = Color.Black
