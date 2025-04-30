@@ -49,7 +49,7 @@ fun OnDateScreen(navController: NavController) {
         Spacer(modifier = Modifier.weight(1f))
         OnDateAnimation()
         Spacer(modifier = Modifier.weight(1f))
-        ActionButtons()
+        ActionButtons(navController = navController)
         Spacer(modifier = Modifier.weight(2f))
         Footer(navController)
     }
@@ -58,7 +58,8 @@ fun OnDateScreen(navController: NavController) {
 @Composable
 fun ActionButtons(
     modifier: Modifier = Modifier,
-    buttonSize: Dp = 80.dp
+    buttonSize: Dp = 80.dp,
+    navController: NavController
 ) {
     Box(
         modifier = modifier,
@@ -109,7 +110,9 @@ fun ActionButtons(
                 .size(buttonSize)
                 .clip(CircleShape)
                 .background(ButtonRed)
-                .clickable { /* Handle click */ },
+                .clickable {
+                    navController.navigate("mapScreen")
+                },
             contentAlignment = Alignment.Center
         ) {
             Icon(

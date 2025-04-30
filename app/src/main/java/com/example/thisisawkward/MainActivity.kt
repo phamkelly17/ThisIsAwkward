@@ -11,6 +11,7 @@ import com.example.thisisawkward.pages.CreateDateScreen
 import com.example.thisisawkward.pages.HomeScreen
 import com.example.thisisawkward.pages.LandingScreen
 import com.example.thisisawkward.pages.LoginScreen
+import com.example.thisisawkward.pages.MapScreen
 import com.example.thisisawkward.pages.MyProfileScreen
 import com.example.thisisawkward.pages.OnDateScreen
 import com.example.thisisawkward.pages.SignUpScreen
@@ -48,6 +49,9 @@ class MainActivity : ComponentActivity() {
                    }
                    composable("onDate"){
                        OnDateScreen(navController)
+                   }
+                   composable("mapScreen"){
+                        MapScreen(navController)
                    }
 
                }

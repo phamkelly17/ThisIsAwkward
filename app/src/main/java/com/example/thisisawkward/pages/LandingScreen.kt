@@ -42,7 +42,7 @@ fun LandingScreen(navController: NavController) {
             modifier = Modifier.padding(10.dp)
         )
         Button(
-            onClick = { navController.navigate("login") },
+            onClick = { navController.navigate("mapScreen") },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Maroon,
                 contentColor = Color.White
@@ -53,7 +53,7 @@ fun LandingScreen(navController: NavController) {
                 .padding(vertical = 5.dp)
         ) {
             Text(
-                text = "Log in",
+                text = "mapScreen",
                 style = TextStyle(fontSize = 24.sp)
             )
         }
