@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 
 import androidx.compose.ui.Modifier
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -41,8 +42,10 @@ import com.example.thisisawkward.viewmodels.DateViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import com.example.thisisawkward.components.convertMillisToDate
 import com.example.thisisawkward.components.formatTime
+import com.example.thisisawkward.viewmodels.GeocodingViewModel
 import com.example.thisisawkward.viewmodels.ProfileViewModel
 
 @Preview
@@ -81,25 +84,37 @@ fun DateForm() {
 
     val dateViewModel: DateViewModel = viewModel()
     val profileViewModel: ProfileViewModel = viewModel()
+    val geocodingViewModel: GeocodingViewModel = viewModel()
+    val locationErrorMessage by geocodingViewModel.locationErrorMessage.collectAsState()
+
+    val context = LocalContext.current
 
     fun submitDate () {
-        dateViewModel.createDate(
-            startTime,
-            endTime,
-            date,
-            location,
-            modusOperandi,
-            additionalDetails,
-            errorMessage
-        )
+        geocodingViewModel.geocodeAddress(context, location.value) {
+            if (geocodingViewModel.locationErrorMessage.value == "") {
+                dateViewModel.createDate(
+                    startTime,
+                    endTime,
+                    date,
+                    location,
+                    modusOperandi,
+                    additionalDetails,
+                    errorMessage,
+                    geocodingViewModel.lat.value,
+                    geocodingViewModel.lng.value
+                )
 
-        selectedDate = null
-        selectedStartHour = null
-        selectedStartMinute = null
-        selectedEndHour = null
-        selectedEndMinute = null
+                selectedDate = null
+                selectedStartHour = null
+                selectedStartMinute = null
+                selectedEndHour = null
+                selectedEndMinute = null
 
-        profileViewModel.incrementStat("totalDates", 1)
+                profileViewModel.incrementStat("totalDates", 1)
+            }
+
+            println("ERR MSG: ${geocodingViewModel.locationErrorMessage.value}")
+        }
     }
 
     Card(
@@ -143,6 +158,9 @@ fun DateForm() {
                 selectedDate = millis
             })
             TextField(labelColor = Color.DarkGray, label = "Location", fieldValue = location, onChange = { location.value = it })
+            if (locationErrorMessage.isNotEmpty()) {
+                Text(locationErrorMessage, color = Color.Red, modifier = Modifier.align(Alignment.Start))
+            }
             TextField(labelColor = Color.DarkGray, label = "Preferred Modus Operandi", fieldValue = modusOperandi, onChange = { modusOperandi.value = it })
             TextField(labelColor = Color.DarkGray, label = "Additional Details", fieldValue = additionalDetails, onChange = { additionalDetails.value = it }, numLines = 2)
 

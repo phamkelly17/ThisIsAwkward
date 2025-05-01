@@ -2,14 +2,9 @@ package com.example.thisisawkward.viewmodels
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.lifecycle.ViewModel
-import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
 import java.time.LocalTime
@@ -29,7 +24,9 @@ class DateViewModel : ViewModel() {
                    location: MutableState<String>,
                    modusOperandi: MutableState<String>,
                    additionalDetails: MutableState<String>,
-                   errorMessage: MutableState<String>
+                   errorMessage: MutableState<String>,
+                   lat: Double,
+                   lng: Double
     ) {
         val dateData = hashMapOf(
             "startTime" to startTime.value,
@@ -39,7 +36,9 @@ class DateViewModel : ViewModel() {
             "modusOperandi" to modusOperandi.value,
             "additionalDetails" to additionalDetails.value,
             "alertCreated" to false,
-            "alertAccepted" to false
+            "alertAccepted" to false,
+            "lat" to lat,
+            "lng" to lng
         )
 
         user?.let {

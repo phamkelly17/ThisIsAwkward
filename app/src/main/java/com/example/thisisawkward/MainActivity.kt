@@ -9,6 +9,7 @@ import androidx.annotation.RequiresApi
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.thisisawkward.components.LocationApp
 import com.example.thisisawkward.pages.CreateDateScreen
 import com.example.thisisawkward.pages.HomeLoadingScreen
 import com.example.thisisawkward.pages.HomeScreen
@@ -34,6 +35,9 @@ class MainActivity : ComponentActivity() {
                ) {
                    composable("landing"){
                        LandingScreen(navController)
+                   }
+                   composable("location") {
+                       LocationApp(navController)
                    }
                    composable("login"){
                        LoginScreen(navController)
