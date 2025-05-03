@@ -96,7 +96,7 @@ fun MyProfileScreen(navController: NavController, locationViewModel: LocationVie
         Spacer(modifier = Modifier.height(30.dp)) // Pushes everything down to avoid status bar overlap
 
         Box(
-            modifier = Modifier.height(687.dp),
+            modifier = Modifier.height(887.dp),
             contentAlignment = Alignment.TopCenter
         ) {
             // Profile Picture as Background
