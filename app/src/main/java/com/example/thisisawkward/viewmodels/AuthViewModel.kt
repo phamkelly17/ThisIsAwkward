@@ -22,7 +22,7 @@ class AuthViewModel : ViewModel() {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    navController.navigate("homeLoadingScreen")
+                    navController.navigate("location")
                 } else {
                     errorMessage.value = task.exception?.localizedMessage ?: "An unknown error occurred"
                 }
@@ -60,7 +60,7 @@ class AuthViewModel : ViewModel() {
                             .addOnFailureListener { errorMessage.value = it.localizedMessage }
                     }
 
-                    navController.navigate("homeLoadingScreen")
+                    navController.navigate("location")
                 } else {
                     errorMessage.value = task.exception?.localizedMessage ?: "An unknown error occurred"
                 }

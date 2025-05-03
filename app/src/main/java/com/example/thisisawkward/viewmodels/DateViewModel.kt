@@ -2,14 +2,9 @@ package com.example.thisisawkward.viewmodels
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.lifecycle.ViewModel
-import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
 import java.time.LocalTime
@@ -29,7 +24,9 @@ class DateViewModel : ViewModel() {
                    location: MutableState<String>,
                    modusOperandi: MutableState<String>,
                    additionalDetails: MutableState<String>,
-                   errorMessage: MutableState<String>
+                   errorMessage: MutableState<String>,
+                   lat: Double,
+                   lng: Double
     ) {
         val dateData = hashMapOf(
             "startTime" to startTime.value,
@@ -39,7 +36,9 @@ class DateViewModel : ViewModel() {
             "modusOperandi" to modusOperandi.value,
             "additionalDetails" to additionalDetails.value,
             "alertCreated" to false,
-            "alertAccepted" to false
+            "acceptedBy" to "",
+            "lat" to lat,
+            "lng" to lng
         )
 
         user?.let {
@@ -136,11 +135,14 @@ class DateViewModel : ViewModel() {
                                     startTime != null && endTime != null && date != null &&
                                     isDateHappeningNow(date, startTime, endTime) &&
                                     doc.getBoolean("alertCreated") == true &&
-                                    doc.getBoolean("alertAccepted") == false
+                                    (doc.getString("acceptedBy") == "" || doc.getString("acceptedBy") == currentUserId)
                                 ) {
                                     val location = doc.getString("location") ?: "N/A"
                                     val modusOperandi = doc.getString("modusOperandi") ?: "N/A"
                                     val additionalDetails = doc.getString("additionalDetails") ?: "N/A"
+                                    val lng = doc.getDouble("lng") ?: 0.0
+                                    val lat = doc.getDouble("lat") ?: 0.0
+                                    val acceptedBy = doc.getString("acceptedBy") ?: ""
 
                                     dates.add(
                                         mapOf(
@@ -150,7 +152,10 @@ class DateViewModel : ViewModel() {
                                             "location" to location,
                                             "modusOperandi" to modusOperandi,
                                             "phone" to phone,
-                                            "additionalDetails" to additionalDetails
+                                            "additionalDetails" to additionalDetails,
+                                            "lng" to lng,
+                                            "lat" to lat,
+                                            "acceptedBy" to acceptedBy
                                         )
                                     )
                                 }
@@ -174,6 +179,32 @@ class DateViewModel : ViewModel() {
         } ?: callback(emptyList())
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getUserDateCoordinates(callback: (List<Pair<Double, Double>>) -> Unit) {
+        val user = FirebaseAuth.getInstance().currentUser
+
+        user?.let {
+            val currentUserId = it.uid
+
+            FirebaseFirestore.getInstance()
+                .collection("users")
+                .document(currentUserId)
+                .collection("dates")
+                .get()
+                .addOnSuccessListener { querySnapshot ->
+                    val dateCoords = querySnapshot.documents.map { doc ->
+                        val lng = doc.getDouble("lng") ?: 0.0
+                        val lat = doc.getDouble("lat") ?: 0.0
+                        Pair(lat, lng)
+                    }
+                    callback(dateCoords)
+                }
+                .addOnFailureListener { e ->
+                    println("Error getting user date coordinates: $e")
+                }
+        }
+    }
+
     fun createDateAlert(dateId: String) {
         user?.let {
             val currentUserId = it.uid
@@ -193,17 +224,25 @@ class DateViewModel : ViewModel() {
     }
 
     fun acceptDateRequest(dateId: String, userId: String, value: Boolean) {
+        var acceptedBy = ""
+
+        if (value) {
+            val user = FirebaseAuth.getInstance().currentUser
+            user?.let {
+                acceptedBy = user.uid
+            }
+        }
         FirebaseFirestore.getInstance()
             .collection("users")
             .document(userId)
             .collection("dates")
             .document(dateId)
-            .update("alertAccepted", value)
+            .update("acceptedBy", acceptedBy)
             .addOnSuccessListener {
-                println("alertAccepted updated successfully")
+                println("acceptedBy updated successfully")
             }
             .addOnFailureListener { e ->
-                println("Error updating alertAccepted: $e")
+                println("Error updating acceptedBy: $e")
             }
     }
 

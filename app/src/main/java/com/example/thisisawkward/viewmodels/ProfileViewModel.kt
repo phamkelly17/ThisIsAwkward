@@ -42,7 +42,6 @@ class ProfileViewModel : ViewModel() {
                 .document(currentUserId)
                 .update(statName, FieldValue.increment(increment))
                 .addOnSuccessListener {
-                    println("$statName updated successfully")
                 }
                 .addOnFailureListener { e ->
                     println("Error updating $statName: $e")

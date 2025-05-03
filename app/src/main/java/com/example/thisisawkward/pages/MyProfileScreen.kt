@@ -1,5 +1,7 @@
 package com.example.thisisawkward.pages
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -26,28 +28,58 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.thisisawkward.R
 import com.example.thisisawkward.components.Footer
+import com.example.thisisawkward.viewmodels.DateViewModel
+import com.example.thisisawkward.viewmodels.LocationViewModel
 import com.example.thisisawkward.viewmodels.ProfileViewModel
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerState
+import com.google.maps.android.compose.rememberCameraPositionState
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyProfileScreen(navController: NavController) {
+fun MyProfileScreen(navController: NavController, locationViewModel: LocationViewModel) {
     var modusOperandum by remember { mutableStateOf("") }
     var editingModus = remember { mutableStateOf(false) }
+    var userDateCoordinates by remember { mutableStateOf<List<Pair<Double, Double>>>(emptyList()) }
+
+    val currentLng by locationViewModel.currentLng.collectAsState()
+    val currentLat by locationViewModel.currentLat.collectAsState()
+    val currentLocation = LatLng(currentLat, currentLng)
+    val cameraPositionState = rememberCameraPositionState {
+        position = CameraPosition.fromLatLngZoom(currentLocation, 10f)
+    }
 
     val scrollState = rememberScrollState()
-    val context = LocalContext.current
-    var datesCrashed = remember { mutableStateOf(0) }
-    var crashedDates = remember { mutableStateOf(0) }
-    var totalDates = remember { mutableStateOf(0) }
-    var name = remember { mutableStateOf("") }
-    var dateJoined = remember { mutableStateOf("") }
+    val datesCrashed = remember { mutableStateOf(0) }
+    val crashedDates = remember { mutableStateOf(0) }
+    val totalDates = remember { mutableStateOf(0) }
+    val name = remember { mutableStateOf("") }
+    val dateJoined = remember { mutableStateOf("") }
 
     val profileViewModel: ProfileViewModel = viewModel()
+    val dateViewModel: DateViewModel = viewModel()
+
+    LaunchedEffect(Unit) {
+        profileViewModel.getModusOperandum { modus ->
+            modusOperandum = modus
+        }
+
+        dateViewModel.getUserDateCoordinates { dateCoords ->
+            userDateCoordinates = dateCoords
+        }
+    }
 
     profileViewModel.getModusOperandum { modus ->
         modusOperandum = modus
     }
 
+    dateViewModel.getUserDateCoordinates { dateCoords ->
+
+    }
     profileViewModel.getProfileInfo { dc, cd, td, n, dj ->
         datesCrashed.value = dc
         crashedDates.value = cd
@@ -69,28 +101,13 @@ fun MyProfileScreen(navController: NavController) {
         ) {
             // Profile Picture as Background
             Image(
-                painter = painterResource(id = R.drawable.sample_alert_image), // Replace with actual image
+                painter = painterResource(id = R.drawable.background), // Replace with actual image
                 contentDescription = "Profile Image",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(320.dp) // Adjusted height for better visibility
             )
-
-            // Edit Icon for Profile Picture (without white ring)
-            IconButton(
-                onClick = { /* TODO: Open edit profile picture dialog */ },
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(16.dp)
-                    .size(28.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Edit,
-                    contentDescription = "Edit Profile Picture",
-                    tint = Color.White
-                )
-            }
 
             // Scrollable White Box Background
             Surface(
@@ -225,14 +242,19 @@ fun MyProfileScreen(navController: NavController) {
                                 .fillMaxWidth()
                                 .height(150.dp)
                                 .clip(RoundedCornerShape(12.dp))
-                                .background(Color.Gray) // Placeholder color for map
                         ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.sample_alert_image), // Replace with actual map image
-                                contentDescription = "Map",
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier.fillMaxSize()
-                            )
+                            GoogleMap(
+                                modifier = Modifier.fillMaxSize(),
+                                cameraPositionState = cameraPositionState
+                            ) {
+                                for (dateCoords in userDateCoordinates) {
+                                    val dateLocation = LatLng(dateCoords.first, dateCoords.second)
+
+                                    Marker(
+                                        state = MarkerState(position = dateLocation),
+                                    )
+                                }
+                            }
                         }
                     }
 
