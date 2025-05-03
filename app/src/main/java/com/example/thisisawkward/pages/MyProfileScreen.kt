@@ -96,7 +96,7 @@ fun MyProfileScreen(navController: NavController, locationViewModel: LocationVie
         Spacer(modifier = Modifier.height(30.dp)) // Pushes everything down to avoid status bar overlap
 
         Box(
-            modifier = Modifier.height(887.dp),
+            modifier = Modifier.height(687.dp),
             contentAlignment = Alignment.TopCenter
         ) {
             // Profile Picture as Background
@@ -113,7 +113,7 @@ fun MyProfileScreen(navController: NavController, locationViewModel: LocationVie
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 270.dp) // Moved lower to expose more background
+                    .padding(top = 200.dp) // Moved lower to expose more background
                     .clip(RoundedCornerShape(30.dp)) // Rounded corners applied
                     //.weight(1f) // Makes the content inside scrollable
                     .verticalScroll(scrollState), // Fixes scrolling
