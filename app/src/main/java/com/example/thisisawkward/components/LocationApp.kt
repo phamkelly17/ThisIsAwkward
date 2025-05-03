@@ -14,9 +14,10 @@ import androidx.compose.ui.Alignment
 import androidx.navigation.NavController
 import com.example.thisisawkward.R
 import com.example.thisisawkward.enableLocationManager
+import com.example.thisisawkward.viewmodels.LocationViewModel
 
 @Composable
-fun LocationApp(navController: NavController) {
+fun LocationApp(navController: NavController, locationViewModel: LocationViewModel) {
     val context = LocalContext.current
     var location by remember { mutableStateOf("") }
     var permissionsGranted by remember { mutableStateOf(false) }
@@ -43,6 +44,7 @@ fun LocationApp(navController: NavController) {
         LaunchedEffect(Unit) {
             enableLocationManager(context) { loc ->
                 location = context.getString(R.string.lat_long, loc.latitude, loc.longitude)
+                locationViewModel.updateCurrentCoordinates(loc.latitude, loc.longitude)
 
                 // Navigate to landing screen after location is granted
                 navController.navigate("homeLoadingScreen") {

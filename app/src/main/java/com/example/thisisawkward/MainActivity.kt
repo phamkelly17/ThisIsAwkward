@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -18,6 +19,7 @@ import com.example.thisisawkward.pages.LoginScreen
 import com.example.thisisawkward.pages.MyProfileScreen
 import com.example.thisisawkward.pages.OnDateScreen
 import com.example.thisisawkward.pages.SignUpScreen
+import com.example.thisisawkward.viewmodels.LocationViewModel
 
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
@@ -29,15 +31,17 @@ class MainActivity : ComponentActivity() {
             ThisIsAwkwardTheme {
                 val navController = rememberNavController()
 
-               NavHost(
+                val locationViewModel: LocationViewModel = viewModel()
+
+                NavHost(
                    navController = navController,
-                   startDestination = ("landing")
+                   startDestination = ("landing"),
                ) {
                    composable("landing"){
                        LandingScreen(navController)
                    }
                    composable("location") {
-                       LocationApp(navController)
+                       LocationApp(navController, locationViewModel)
                    }
                    composable("login"){
                        LoginScreen(navController)
@@ -49,13 +53,13 @@ class MainActivity : ComponentActivity() {
                        HomeLoadingScreen(navController)
                    }
                    composable("home"){
-                       HomeScreen(navController)
+                       HomeScreen(navController, locationViewModel)
                    }
                    composable("createDate"){
                        CreateDateScreen(navController)
                    }
                    composable("myProfile"){
-                       MyProfileScreen(navController)
+                       MyProfileScreen(navController, locationViewModel)
                    }
                    composable(
                        "onDate/{dateId}"

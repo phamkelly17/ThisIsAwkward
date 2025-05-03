@@ -12,6 +12,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -22,11 +24,16 @@ import com.example.thisisawkward.components.Background
 import com.example.thisisawkward.components.Footer
 import com.example.thisisawkward.components.Header
 import com.example.thisisawkward.viewmodels.DateViewModel
+import com.example.thisisawkward.viewmodels.LocationViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun HomeScreen(navController: NavController) {
+fun HomeScreen(navController: NavController, locationViewModel: LocationViewModel) {
     val dateViewModel: DateViewModel = viewModel()
+
+    val currentLng by locationViewModel.currentLng.collectAsState()
+    val currentLat by locationViewModel.currentLat.collectAsState()
+
     val dates = rememberSaveable {
         mutableStateOf<List<Map<String, Any>>>(emptyList())
     }
@@ -47,7 +54,7 @@ fun HomeScreen(navController: NavController) {
                 .fillMaxHeight()
         ) {
             items(dates.value) { date ->
-                Alert(date)
+                Alert(date, currentLat, currentLng)
             }
         }
         Footer(navController)
