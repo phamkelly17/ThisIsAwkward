@@ -70,4 +70,5 @@ dependencies {
     implementation(libs.play.services.maps)
     implementation(libs.maps.compose)
     implementation(libs.google.google.maps.services)
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
 }
